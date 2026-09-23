@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rotina em Foco</title>
+<meta name="description" content="Painel do Meu Sistema Operacional Pessoal: tarefas, Matriz de Eisenhower, semana, Pomodoro e hábitos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+[hidden]{display:none!important}
+img{max-width:100%}
+
+:root{
+  --ground:#EEF1EC; --surface:#FFFFFF; --surface-2:#F6F8F4; --ink:#16211C; --ink-2:#4A5A52; --ink-3:#7B8A82;
+  --line:#DCE3DC; --accent:#2346D8; --accent-ink:#FFFFFF; --accent-soft:#E3E8FC;
+  --q1:#D8342C; --q1-soft:#FBE6E4; --q2:#2A6FDB; --q2-soft:#E2ECFB; --q3:#C98A06; --q3-soft:#FBF1D9; --q4:#8A958F; --q4-soft:#ECEFEC;
+  --ok:#1F8A55; --ok-soft:#DDF2E6; --warn:#C24A1C;
+  --a-fac:#2A6FDB; --a-tra:#7C4DDB; --a-casa:#9A6A3A; --a-sau:#1F8A55; --a-pes:#D14F8A;
+  --shadow:0 1px 2px rgba(22,33,28,.06),0 8px 24px -12px rgba(22,33,28,.18);
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Figtree","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0E1311; --surface:#171E1A; --surface-2:#1D2621; --ink:#E6EDE9; --ink-2:#AEBBB4; --ink-3:#7F8D86;
+    --line:#2A3530; --accent:#7D95FF; --accent-ink:#0E1311; --accent-soft:#232C4D;
+    --q1:#FF7A70; --q1-soft:#3A1F1D; --q2:#6FA3FF; --q2-soft:#1C2A42; --q3:#F2B940; --q3-soft:#3A2F14; --q4:#9BA6A0; --q4-soft:#242B27;
+    --ok:#4FCB8A; --ok-soft:#173226; --warn:#FF8A5B;
+    --a-fac:#6FA3FF; --a-tra:#A889FF; --a-casa:#D1A172; --a-sau:#4FCB8A; --a-pes:#F28DBA;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0E1311; --surface:#171E1A; --surface-2:#1D2621; --ink:#E6EDE9; --ink-2:#AEBBB4; --ink-3:#7F8D86;
+  --line:#2A3530; --accent:#7D95FF; --accent-ink:#0E1311; --accent-soft:#232C4D;
+  --q1:#FF7A70; --q1-soft:#3A1F1D; --q2:#6FA3FF; --q2-soft:#1C2A42; --q3:#F2B940; --q3-soft:#3A2F14; --q4:#9BA6A0; --q4-soft:#242B27;
+  --ok:#4FCB8A; --ok-soft:#173226; --warn:#FF8A5B;
+  --a-fac:#6FA3FF; --a-tra:#A889FF; --a-casa:#D1A172; --a-sau:#4FCB8A; --a-pes:#F28DBA;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -14px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;padding-inline:clamp(16px,4vw,40px);padding-block:0 64px}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px 8px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:19px}
+.brand-mark{width:30px;height:30px;border-radius:50%;background:conic-gradient(var(--accent) 0 62%,var(--accent-soft) 62% 100%);position:relative;flex:none}
+.brand-mark::after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--ground)}
+.top small{color:var(--ink-3);font-size:13px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;padding-block:16px 8px}
+.today{padding:8px 0}
+.today .date{font-family:var(--display);font-weight:800;font-size:clamp(40px,6.4vw,76px);line-height:.95;letter-spacing:-.03em}
+.today .date span{color:var(--accent)}
+.today p{color:var(--ink-2);max-width:48ch;margin:14px 0 0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.kpi b{display:block;font-family:var(--display);font-size:30px;line-height:1.1}
+.kpi span{font-size:12.5px;color:var(--ink-2)}
+.kpi.alert b{color:var(--q1)}
+.weekbar{margin-top:14px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--ink-2)}
+.weekbar .track{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.weekbar .fill{height:100%;background:var(--ok);border-radius:99px;transition:width .4s}
+
+.capture{background:var(--surface);border-radius:20px;padding:20px;box-shadow:var(--shadow);border:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.capture h2{font-size:22px}
+.capture p.hint{margin:0;color:var(--ink-2);font-size:13.5px}
+.capture textarea{width:100%;min-height:78px;resize:vertical;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--surface-2);font:inherit;color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:11px;padding:10px 16px;font-weight:700;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;gap:8px}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.small{padding:7px 12px;font-size:13.5px}
+.examples{display:flex;gap:6px;flex-wrap:wrap}
+.examples button{border:1px dashed var(--line);background:transparent;border-radius:99px;padding:4px 10px;font-size:12.5px;color:var(--ink-2)}
+.proposal{border:1px solid var(--accent);background:var(--accent-soft);border-radius:14px;padding:14px;display:grid;gap:10px}
+.proposal .ptitle{width:100%;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:var(--surface);font-weight:600}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pgrid label{display:grid;gap:3px;font-size:11.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em}
+.pgrid select,.pgrid input{border:1px solid var(--line);border-radius:9px;padding:7px 8px;background:var(--surface);font-size:13.5px;text-transform:none;letter-spacing:0;font-weight:500;color:var(--ink);min-width:0;width:100%}
+.why{font-size:13px;color:var(--ink-2);margin:0}
+.why b{color:var(--ink)}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(8px);margin-top:28px;padding-block:10px;border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.nav a{white-space:nowrap;text-decoration:none;color:var(--ink-2);font-weight:600;font-size:14px;padding:7px 13px;border-radius:99px}
+.nav a:hover{background:var(--surface);color:var(--ink)}
+
+section.block{padding-block:36px 4px;scroll-margin-top:64px}
+.shead{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.shead h2{font-size:clamp(26px,3.2vw,34px)}
+.shead p{margin:4px 0 0;color:var(--ink-2);max-width:62ch}
+
+/* tasks */
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+.panel h3{font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.count{font-family:var(--mono);font-size:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:99px;padding:1px 8px;color:var(--ink-2)}
+.tlist{list-style:none;margin:0;padding:0;display:grid}
+.task{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:10px 4px;border-top:1px solid var(--line)}
+.tlist .task:first-child{border-top:0}
+.check{width:22px;height:22px;border-radius:7px;border:2px solid var(--ink-3);background:transparent;display:grid;place-items:center;margin-top:1px;padding:0}
+.check.on{background:var(--ok);border-color:var(--ok)}
+.check.on::after{content:"";width:9px;height:5px;border:2.5px solid var(--surface);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.task .t{font-weight:600}
+.task.done .t{text-decoration:line-through;color:var(--ink-3)}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.chip{font-size:11.5px;font-weight:600;border-radius:99px;padding:2px 8px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);display:inline-flex;align-items:center;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex:none}
+.chip.q1{background:var(--q1-soft);color:var(--q1);border-color:transparent}
+.chip.q2{background:var(--q2-soft);color:var(--q2);border-color:transparent}
+.chip.q3{background:var(--q3-soft);color:var(--q3);border-color:transparent}
+.chip.q4{background:var(--q4-soft);color:var(--q4);border-color:transparent}
+.chip.late{background:var(--q1);color:#fff;border-color:transparent}
+.due{font-family:var(--mono);font-size:12px;color:var(--ink-3);white-space:nowrap;padding-top:2px}
+.empty{color:var(--ink-3);font-size:14px;padding:10px 4px}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
+th{text-align:left;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td select{border:1px solid var(--line);border-radius:8px;padding:4px 6px;background:var(--surface);font-size:13px}
+
+/* matrix */
+.matrix{display:grid;grid-template-columns:auto 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:10px}
+.axis{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);display:grid;place-items:center}
+.axis.v{writing-mode:vertical-rl;transform:rotate(180deg)}
+.quad{border-radius:18px;padding:16px;min-height:190px;border:1px solid transparent}
+.quad h3{font-size:19px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.quad h3 .n{font-family:var(--mono);font-size:26px}
+.quad .sub{font-size:13px;margin:2px 0 10px;font-weight:600}
+.quad ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.quad li{background:var(--surface);border-radius:10px;padding:8px 10px;font-size:13.5px;font-weight:600;display:flex;justify-content:space-between;gap:8px}
+.quad li .due{font-weight:500}
+.quad.q1{background:var(--q1-soft)} .quad.q1 h3,.quad.q1 .sub{color:var(--q1)}
+.quad.q2{background:var(--q2-soft)} .quad.q2 h3,.quad.q2 .sub{color:var(--q2)}
+.quad.q3{background:var(--q3-soft)} .quad.q3 h3,.quad.q3 .sub{color:var(--q3)}
+.quad.q4{background:var(--q4-soft)} .quad.q4 h3,.quad.q4 .sub{color:var(--q4)}
+
+/* week */
+.week{display:grid;grid-template-columns:repeat(7,minmax(150px,1fr));gap:10px;overflow-x:auto;padding-bottom:6px}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.day.is-today{border:2px solid var(--accent)}
+.day header{display:flex;justify-content:space-between;align-items:baseline}
+.day header b{font-family:var(--display);font-size:17px}
+.day header .tag{font-size:11px;font-weight:700;color:var(--accent-ink);background:var(--accent);border-radius:99px;padding:1px 8px}
+.slot{border-radius:10px;padding:8px;background:var(--surface-2);font-size:13px;display:grid;gap:2px}
+.slot .h{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.slot .a{font-weight:600;display:flex;gap:6px;align-items:baseline}
+.slot .a .dot{transform:translateY(-1px)}
+.slot.done .a{color:var(--ink-3);text-decoration:line-through}
+.slot.late{outline:1px dashed var(--warn)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+
+/* focus */
+.focus{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center}
+.ring{position:relative;width:min(300px,78vw);aspect-ratio:1;max-width:100%}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .center{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring .time{font-family:var(--mono);font-weight:700;font-size:clamp(44px,7vw,64px);letter-spacing:-.02em}
+.ring .mode{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+.cycles{display:flex;gap:8px;margin:6px 0 14px}
+.cycles i{width:14px;height:14px;border-radius:50%;border:2px solid var(--q1)}
+.cycles i.on{background:var(--q1)}
+.focus select{border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:var(--surface);max-width:100%;min-width:0;width:100%}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.rules div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.rules b{font-family:var(--mono);font-size:22px;display:block}
+.rules span{font-size:13px;color:var(--ink-2)}
+
+/* habits */
+.habits{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.habit{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;grid-template-columns:auto 1fr;gap:12px}
+.habit.on{background:var(--ok-soft);border-color:transparent}
+.habit h3{font-size:16px;font-family:var(--body);font-weight:700}
+.habit p{margin:4px 0 0;font-size:13px;color:var(--ink-2)}
+
+/* ai plan */
+.aiplan{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:12px}
+.aiout{background:var(--surface-2);border-radius:12px;padding:14px;white-space:pre-wrap;font-size:14.5px;min-height:64px;color:var(--ink)}
+.note{font-size:13px;color:var(--ink-3)}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--ground);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:var(--shadow);z-index:20;max-width:calc(100% - 32px)}
+.banner{background:var(--q3-soft);color:var(--ink);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:10px}
+footer{margin-top:48px;color:var(--ink-3);font-size:13px}
+
+@media (max-width:900px){
+  .hero,.cols2,.focus{grid-template-columns:1fr}
+  .habits{grid-template-columns:1fr 1fr}
+  .ring{margin:0 auto}
+}
+@media (max-width:560px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .pgrid{grid-template-columns:1fr 1fr}
+  .habits,.rules{grid-template-columns:1fr}
+  .matrix{grid-template-columns:1fr;grid-template-rows:none}
+  .axis{display:none}
+  .top small{display:none}
+  .badges{justify-content:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+
+button.slot{border:0;text-align:left;width:100%;font:inherit;color:inherit;cursor:pointer}
+button.slot:hover{background:var(--accent-soft)}
+.badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.top{flex-wrap:wrap}
+.badge{font-size:12px;font-weight:700;border-radius:99px;padding:3px 10px;background:var(--surface);border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+.badge.ai{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Rotina em Foco</div>
+    <div class="badges"><span class="badge" id="mode-badge">Versão aberta</span><span class="badge ai" id="ai-badge">Sem IA (regras)</span></div>
+  </header>
+
+  <div class="hero">
+    <div class="today">
+      <div class="eyebrow" id="weekday">Hoje</div>
+      <div class="date" id="bigdate">—</div>
+      <p id="summary">Carregando suas tarefas…</p>
+      <div class="kpis">
+        <div class="kpi"><b id="k-today" class="mono">–</b><span>para hoje</span></div>
+        <div class="kpi alert"><b id="k-high" class="mono">–</b><span>prioridade alta abertas</span></div>
+        <div class="kpi"><b id="k-doing" class="mono">–</b><span>em andamento</span></div>
+        <div class="kpi"><b id="k-done" class="mono">–</b><span>concluídas</span></div>
+      </div>
+      <div class="weekbar"><span>Semana</span><div class="track"><div class="fill" id="weekfill" style="width:0"></div></div><span class="mono" id="weekpct">0%</span></div>
+      
+    </div>
+
+    <form class="capture" id="capture" autocomplete="off">
+      <div class="eyebrow">Captura rápida</div>
+      <h2>O que apareceu agora?</h2>
+      <p class="hint">Escreva do jeito que vier. O painel sugere área, prioridade, quadrante, técnica e prazo. Você revisa antes de salvar.</p>
+      <textarea id="cap-text" placeholder="Ex.: gestor pediu a planilha de pedidos atualizada até sexta"></textarea>
+      <div class="examples" id="examples">
+        <button type="button">ler capítulo 4 para a prova da semana que vem</button>
+        <button type="button">responder colega do grupo sobre a data da prova</button>
+        <button type="button">comprar remédio da farmácia amanhã</button>
+      </div>
+      <div class="row">
+        <button class="btn" id="cap-btn" type="submit">Classificar</button>
+        <span class="note" id="cap-status"></span>
+      </div>
+      <div class="proposal" id="proposal" hidden>
+        <input class="ptitle" id="p-title" aria-label="Nome da tarefa">
+        <div class="pgrid">
+          <label>Área<select id="p-area"></select></label>
+          <label>Prioridade<select id="p-prio"></select></label>
+          <label>Prazo<input type="date" id="p-due"></label>
+          <label>Quadrante<select id="p-quad"></select></label>
+          <label>Técnica<select id="p-tec"></select></label>
+          <label>Status<select id="p-status"></select></label>
+        </div>
+        <p class="why" id="p-why"></p>
+        <div class="row">
+          <button class="btn small" type="button" id="p-save">Salvar tarefa</button>
+          <button class="btn small ghost" type="button" id="p-cancel">Descartar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<nav class="nav" aria-label="Seções">
+  <div class="wrap">
+    <a href="#hoje">Hoje</a><a href="#matriz">Matriz de Eisenhower</a><a href="#semana">Semana</a><a href="#foco">Foco</a><a href="#habitos">Hábitos</a><a href="#todas">Todas as tarefas</a><a href="#ia">Planejar o dia</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <section class="block" id="hoje">
+    <div class="shead"><div><h2>Hoje e prioridades</h2><p>Marque a caixa quando terminar. A tarefa passa para Concluído na hora.</p></div></div>
+    <div class="cols2">
+      <div class="panel"><h3>Para hoje <span class="count" id="c-today">0</span></h3><ul class="tlist" id="l-today"></ul></div>
+      <div class="panel"><h3>Prioridade alta em aberto <span class="count" id="c-high">0</span></h3><ul class="tlist" id="l-high"></ul></div>
+    </div>
+  </section>
+
+  <section class="block" id="matriz">
+    <div class="shead"><div><h2>Matriz de Eisenhower</h2><p>Tarefas ainda não concluídas, separadas por importância e urgência. Clique em uma tarefa para passar ao próximo quadrante.</p></div></div>
+    <div class="matrix" id="matrix">
+      <div></div><div class="axis">Urgente</div><div class="axis">Não urgente</div>
+      <div class="axis v">Importante</div>
+      <div class="quad q1" data-q="Importante e urgente"><h3>Fazer primeiro <span class="n">0</span></h3><div class="sub">Importante e urgente</div><ul></ul></div>
+      <div class="quad q2" data-q="Importante e não urgente"><h3>Planejar <span class="n">0</span></h3><div class="sub">Importante e não urgente</div><ul></ul></div>
+      <div class="axis v">Não importante</div>
+      <div class="quad q3" data-q="Não importante e urgente"><h3>Delegar ou resolver rápido <span class="n">0</span></h3><div class="sub">Não importante e urgente</div><ul></ul></div>
+      <div class="quad q4" data-q="Não importante e não urgente"><h3>Eliminar ou adiar <span class="n">0</span></h3><div class="sub">Não importante e não urgente</div><ul></ul></div>
+    </div>
+  </section>
+
+  <section class="block" id="semana">
+    <div class="shead"><div><h2>Semana</h2><p>Blocos de trabalho, faculdade, casa, saúde e vida pessoal. O dia de hoje fica destacado. Clique num bloco para marcar como feito.</p></div>
+      <div class="legend" id="legend"></div></div>
+    <div class="week" id="week"></div>
+  </section>
+
+  <section class="block" id="foco">
+    <div class="shead"><div><h2>Foco com Pomodoro</h2><p>25 minutos de foco, 5 de pausa. Depois de quatro ciclos, uma pausa maior.</p></div></div>
+    <div class="focus">
+      <div class="ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--line)" stroke-width="8"/>
+          <circle id="arc" cx="60" cy="60" r="52" fill="none" stroke="var(--q1)" stroke-width="8" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="0"/>
+        </svg>
+        <div class="center"><div><div class="time" id="clock">25:00</div><div class="mode" id="mode">Foco</div></div></div>
+      </div>
+      <div>
+        <label class="eyebrow" for="focus-task">Tarefa em foco</label>
+        <select id="focus-task" style="margin-top:6px"></select>
+        <div class="cycles" id="cycles" aria-label="Ciclos concluídos"><i></i><i></i><i></i><i></i></div>
+        <div class="row">
+          <button class="btn" id="f-start" type="button">Começar</button>
+          <button class="btn ghost" id="f-skip" type="button">Pular etapa</button>
+          <button class="btn ghost" id="f-reset" type="button">Zerar</button>
+        </div>
+        <div class="rules">
+          <div><b>25</b><span>minutos de foco, sem celular</span></div>
+          <div><b>5</b><span>minutos de pausa curta</span></div>
+          <div><b>15</b><span>minutos de pausa após 4 ciclos</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="habitos">
+    <div class="shead"><div><h2>Hábitos</h2><p>Clique para marcar como feito hoje.</p></div><span class="count" id="c-hab">0/0</span></div>
+    <div class="habits" id="habits"></div>
+  </section>
+
+  <section class="block" id="todas">
+    <div class="shead"><div><h2>Todas as tarefas</h2><p>Filtre por área e altere o status direto na tabela.</p></div>
+      <div class="filters" id="filters"></div></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Tarefa</th><th>Área</th><th>Prioridade</th><th>Quadrante</th><th>Técnica</th><th>Prazo</th><th>Status</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table></div>
+  </section>
+
+  <section class="block" id="ia">
+    <div class="shead"><div><h2>Planejar o dia</h2><p>O painel olha as tarefas abertas e os blocos de hoje e sugere uma ordem. A decisão final continua sendo sua.</p></div></div>
+    <div class="aiplan">
+      <div class="row"><button class="btn" id="plan-btn" type="button">Sugerir plano para hoje</button><span class="note" id="plan-status"></span></div>
+      <div class="aiout" id="plan-out">O plano aparece aqui.</div>
+      <p class="note" id="ai-note"></p>
+    </div>
+  </section>
+
+  <footer><span>Rotina em Foco · complemento visual do Meu Sistema Operacional Pessoal (Notion). Os dados deste painel são uma cópia própria e não sincronizam com o Notion.</span><button class="btn small ghost" id="reset" type="button">Restaurar dados de exemplo</button></footer>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+<script>
+(function(){
+/* Endereço do Google Apps Script que conversa com a IA (etapa 2). Vazio = sem IA externa. */
+const AI_ENDPOINT = "";
+
+const AREAS=["Faculdade","Trabalho","Casa","Saúde","Pessoal"];
+const AREA_COLOR={"Faculdade":"var(--a-fac)","Trabalho":"var(--a-tra)","Casa":"var(--a-casa)","Saúde":"var(--a-sau)","Pessoal":"var(--a-pes)"};
+const PRIOS=["Alta","Média","Baixa"];
+const STATUS=["Caixa de entrada","A fazer","Em andamento","Concluído","Adiado"];
+const QUADS=["Importante e urgente","Importante e não urgente","Não importante e urgente","Não importante e não urgente"];
+const QCLASS={"Importante e urgente":"q1","Importante e não urgente":"q2","Não importante e urgente":"q3","Não importante e não urgente":"q4"};
+const QSHORT={"Importante e urgente":"Fazer primeiro","Importante e não urgente":"Planejar","Não importante e urgente":"Delegar/rápido","Não importante e não urgente":"Eliminar/adiar"};
+const TECS=["Pomodoro","Foco livre","Não se aplica"];
+const DIAS=["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
+const MESES=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+
+const state={tasks:[],week:[],habits:[],filter:"Todas",db:null,sample:null,mode:"local"};
+const $=id=>document.getElementById(id);
+function h(tag,attrs,...kids){const e=document.createElement(tag);if(attrs)for(const[k,v]of Object.entries(attrs)){if(k==="class")e.className=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(k,v===true?"":v);}for(const k of kids.flat()){if(k==null||k===false)continue;e.append(k.nodeType?k:document.createTextNode(String(k)));}return e;}
+function toast(msg){const t=$("toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2600);}
+
+const now=new Date();
+const pad=n=>String(n).padStart(2,"0");
+const iso=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const addDays=(n,base=now)=>{const d=new Date(base.getFullYear(),base.getMonth(),base.getDate()+n);return iso(d);};
+const TODAY=iso(now);
+const todayIdx=(now.getDay()+6)%7;
+function fmtDue(s){if(!s)return"sem prazo";if(s===TODAY)return"hoje";const[,m,d]=s.split("-");return d+"/"+m;}
+$("weekday").textContent=DIAS[todayIdx]+(todayIdx<5?"-feira":"");
+$("bigdate").replaceChildren(String(now.getDate())," ",h("span",null,"de "+MESES[now.getMonth()]));
+function fillSelect(sel,opts,val){sel.replaceChildren(...opts.map(o=>h("option",{value:o},o)));if(val)sel.value=val;}
+
+/* ---------- dados de exemplo (versão aberta) ---------- */
+function seed(){
+  const T=(id,titulo,area,prioridade,status,off,tecnica,quadrante,obs)=>({id,titulo,area,prioridade,status,prazo:off==null?null:addDays(off),tecnica,quadrante,obs});
+  const tasks=[
+    T("t01","Finalizar documento teórico do trabalho de Produtividade","Faculdade","Alta","Em andamento",0,"Pomodoro","Importante e urgente","4 Pomodoros hoje à noite."),
+    T("t02","Preencher formulário administrativo do RH","Trabalho","Média","Em andamento",0,"Foco livre","Não importante e urgente","Resolver de uma vez."),
+    T("t03","Estudar conteúdo da próxima aula","Faculdade","Média","A fazer",1,"Pomodoro","Importante e não urgente","Ler os slides antes da aula."),
+    T("t04","Responder e-mails não urgentes","Trabalho","Baixa","A fazer",1,"Não se aplica","Não importante e urgente","Horário fixo no fim da tarde."),
+    T("t05","Enviar relatório semanal para o gestor","Trabalho","Alta","A fazer",2,"Foco livre","Importante e urgente","Até as 17h."),
+    T("t06","Marcar consulta de rotina","Saúde","Média","A fazer",2,"Não se aplica","Importante e não urgente","Ligar no almoço."),
+    T("t07","Fazer compras da semana","Casa","Média","A fazer",3,"Não se aplica","Importante e não urgente","Lista no celular."),
+    T("t08","Caminhada de 30 minutos","Saúde","Baixa","A fazer",4,"Não se aplica","Importante e não urgente","De manhã."),
+    T("t09","Assistir série nova no streaming","Pessoal","Baixa","Adiado",4,"Não se aplica","Não importante e não urgente","Depois da entrega."),
+    T("t10","Gravar vídeo pitch de até 4 minutos","Faculdade","Alta","A fazer",5,"Pomodoro","Importante e urgente","Roteiro antes de gravar."),
+    T("t11","Revisar README e inserir prints do sistema","Faculdade","Alta","A fazer",6,"Pomodoro","Importante e urgente","Um print por requisito."),
+    T("t12","Organizar arquivos e pastas do mês","Trabalho","Média","Adiado",6,"Foco livre","Importante e não urgente","Semana cheia."),
+    T("t13","Entregar trabalho de Produtividade e Gestão do Tempo","Faculdade","Alta","A fazer",7,"Não se aplica","Importante e urgente","Documento, sistema e vídeo."),
+    T("t14","Fazer o planejamento da semana","Pessoal","Alta","Concluído",-2,"Foco livre","Importante e não urgente","Feito com ajuda da IA."),
+    T("t15","Revisar slides da aula anterior","Faculdade","Média","Concluído",-1,"Pomodoro","Importante e não urgente","2 Pomodoros."),
+    T("t16","Pagar conta de luz","Casa","Alta","Concluído",-1,"Não se aplica","Importante e urgente","Pago pelo app do banco.")
+  ];
+  const W=[["Planejar a semana",0,"07:30 – 08:00","Pessoal"],["Expediente de trabalho",0,"09:00 – 18:00","Trabalho"],["Aula online",0,"19:30 – 21:30","Faculdade"],["Revisar tarefas do dia",0,"21:40 – 21:50","Pessoal"],
+    ["Expediente de trabalho",1,"09:00 – 18:00","Trabalho"],["Academia",1,"18:30 – 19:30","Saúde"],["Revisar slides da aula anterior",1,"20:00 – 21:00","Faculdade"],
+    ["Bloco de foco: relatórios",2,"09:00 – 12:00","Trabalho"],["Formulário do RH",2,"13:00 – 13:30","Trabalho"],["E-mails em lote",2,"17:30 – 18:00","Trabalho"],["Finalizar documento teórico",2,"20:00 – 21:50","Faculdade"],
+    ["Expediente de trabalho",3,"09:00 – 18:00","Trabalho"],["Estudar próxima aula",3,"18:30 – 19:20","Faculdade"],["Aula online",3,"19:30 – 21:30","Faculdade"],["Planejar o dia seguinte",3,"21:40 – 21:50","Pessoal"],
+    ["Expediente de trabalho",4,"09:00 – 18:00","Trabalho"],["Enviar relatório ao gestor",4,"16:00 – 16:30","Trabalho"],["Roteiro do vídeo pitch",4,"19:00 – 20:00","Faculdade"],
+    ["Compras e tarefas de casa",5,"09:00 – 11:00","Casa"],["Gravar vídeo pitch",5,"14:00 – 16:00","Faculdade"],["Tempo livre com família e amigos",5,"18:00 – 22:00","Pessoal"],
+    ["Caminhada de 30 minutos",6,"08:00 – 08:30","Saúde"],["Revisão semanal",6,"19:00 – 19:30","Pessoal"],["Planejar a próxima semana",6,"19:30 – 20:00","Pessoal"]];
+  const week=W.map((w,i)=>({id:"w"+pad(i+1),atividade:w[0],dia:DIAS[w[1]],horario:w[2],area:w[3],status:w[1]<todayIdx?(w[0]==="Academia"?"Adiado":"Concluído"):"A fazer"}));
+  const habits=[["Revisar tarefas do dia","Diário",true,"atualizar o status antes de dormir"],["Planejar o dia seguinte","Diário",false,"definir as 3 tarefas principais"],["Fazer pausas entre blocos de foco","A cada bloco de foco",true,"manter a concentração"],["Evitar celular durante Pomodoro","A cada bloco de foco",false,"diminuir interrupções"],["Fazer revisão semanal","Semanal",false,"replanejar a próxima semana"],["Registrar pedidos na Caixa de Entrada","Diário",true,"não esquecer demandas"]]
+    .map((x,i)=>({id:"h"+(i+1),habito:x[0],frequencia:x[1],concluido:x[2],objetivo:x[3]}));
+  return {tasks,week,habits};
+}
+const LS_KEY="rotina-em-foco-v1";
+function loadLocal(){let d=null;try{d=JSON.parse(localStorage.getItem(LS_KEY)||"null");}catch(e){}
+  if(!d||!Array.isArray(d.tasks)){d=seed();}
+  Object.assign(state,{tasks:d.tasks,week:d.week,habits:d.habits});}
+function persistLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify({tasks:state.tasks,week:state.week,habits:state.habits}));}catch(e){}}
+
+/* ---------- render ---------- */
+function taskRow(t){
+  const done=t.status==="Concluído";
+  const late=!done&&t.prazo&&t.prazo<TODAY;
+  return h("li",{class:"task"+(done?" done":"")},
+    h("button",{class:"check"+(done?" on":""),"aria-label":done?"Reabrir tarefa":"Concluir tarefa",onclick:()=>setTask(t,{status:done?"A fazer":"Concluído"})}),
+    h("div",null,h("div",{class:"t"},t.titulo),
+      h("div",{class:"meta"},
+        h("span",{class:"chip"},h("i",{class:"dot",style:"background:"+AREA_COLOR[t.area]}),t.area),
+        h("span",{class:"chip "+QCLASS[t.quadrante]},QSHORT[t.quadrante]||t.quadrante),
+        t.tecnica==="Pomodoro"?h("span",{class:"chip"},"Pomodoro"):null,
+        t.status==="Em andamento"?h("span",{class:"chip"},"Em andamento"):null,
+        late?h("span",{class:"chip late"},"Atrasada"):null)),
+    h("span",{class:"due"},fmtDue(t.prazo)));
+}
+function list(el,items,emptyMsg){el.replaceChildren(...(items.length?items.map(taskRow):[h("li",{class:"empty"},emptyMsg)]));}
+const prioOrder=p=>PRIOS.indexOf(p);
+const byDue=(a,b)=>(a.prazo||"9999").localeCompare(b.prazo||"9999")||prioOrder(a.prioridade)-prioOrder(b.prioridade);
+
+function render(){
+  const T=state.tasks;
+  const open=T.filter(t=>t.status!=="Concluído");
+  const today=T.filter(t=>t.prazo===TODAY).sort(byDue);
+  const high=open.filter(t=>t.prioridade==="Alta").sort(byDue);
+  const doing=T.filter(t=>t.status==="Em andamento");
+  const done=T.filter(t=>t.status==="Concluído");
+  const late=open.filter(t=>t.prazo&&t.prazo<TODAY);
+  $("k-today").textContent=today.length;$("k-high").textContent=high.length;$("k-doing").textContent=doing.length;$("k-done").textContent=done.length;
+  const w=state.week, wd=w.filter(x=>x.status==="Concluído").length;
+  const pct=w.length?Math.round(wd/w.length*100):0;
+  $("weekfill").style.width=pct+"%";$("weekpct").textContent=pct+"%";
+  const next=high[0];
+  $("summary").textContent=T.length?`${open.length} tarefas em aberto${late.length?`, ${late.length} atrasada${late.length>1?"s":""}`:""}. `+(next?`Prioridade do momento: ${next.titulo}.`:"Nenhuma prioridade alta em aberto."):"Nenhuma tarefa cadastrada ainda. Use a captura rápida ao lado.";
+  $("c-today").textContent=today.length;$("c-high").textContent=high.length;
+  list($("l-today"),today,"Nada com prazo para hoje.");
+  list($("l-high"),high,"Nenhuma tarefa de prioridade alta em aberto.");
+  document.querySelectorAll(".quad").forEach(q=>{const items=open.filter(t=>t.quadrante===q.dataset.q).sort(byDue);
+    q.querySelector(".n").textContent=items.length;
+    q.querySelector("ul").replaceChildren(...(items.length?items.map(t=>h("li",{title:"Clique para mover ao próximo quadrante",style:"cursor:pointer",onclick:()=>{const i=QUADS.indexOf(t.quadrante);setTask(t,{quadrante:QUADS[(i+1)%4]});}},h("span",null,t.titulo),h("span",{class:"due"},fmtDue(t.prazo)))):[h("li",{style:"font-weight:500;color:var(--ink-3)"},"Nenhuma tarefa aqui.")]));});
+  renderWeek();renderHabits();renderTable();renderFocusOptions();
+}
+function renderWeek(){
+  $("legend").replaceChildren(...AREAS.map(a=>h("span",null,h("i",{class:"dot",style:"background:"+AREA_COLOR[a]}),a)));
+  $("week").replaceChildren(...DIAS.map((d,i)=>{
+    const items=state.week.filter(x=>x.dia===d).sort((a,b)=>a.horario.localeCompare(b.horario));
+    return h("div",{class:"day"+(i===todayIdx?" is-today":"")},
+      h("header",null,h("b",null,d),i===todayIdx?h("span",{class:"tag"},"hoje"):null),
+      ...(items.length?items.map(x=>h("button",{type:"button",class:"slot"+(x.status==="Concluído"?" done":"")+(x.status==="Adiado"?" late":""),title:"Clique para marcar como feito",onclick:()=>save("week",x,{status:x.status==="Concluído"?"A fazer":"Concluído"})},
+        h("span",{class:"h"},x.horario+(x.status==="Adiado"?" · adiado":"")),
+        h("span",{class:"a"},h("i",{class:"dot",style:"background:"+AREA_COLOR[x.area]}),x.atividade))):[h("div",{class:"empty"},"Livre")]));
+  }));
+}
+function renderHabits(){
+  const H=state.habits; $("c-hab").textContent=H.filter(x=>x.concluido).length+"/"+H.length;
+  $("habits").replaceChildren(...H.map(x=>h("div",{class:"habit"+(x.concluido?" on":"")},
+    h("button",{class:"check"+(x.concluido?" on":""),"aria-label":(x.concluido?"Desmarcar ":"Marcar ")+x.habito,onclick:()=>save("habits",x,{concluido:!x.concluido})}),
+    h("div",null,h("h3",null,x.habito),h("p",null,x.frequencia+" · "+x.objetivo)))));
+}
+function renderTable(){
+  const f=["Todas",...AREAS];
+  $("filters").replaceChildren(...f.map(a=>h("button",{type:"button","aria-pressed":String(state.filter===a),onclick:()=>{state.filter=a;renderTable();}},a)));
+  const rows=state.tasks.filter(t=>state.filter==="Todas"||t.area===state.filter).sort(byDue);
+  $("tbody").replaceChildren(...rows.map(t=>{const s=h("select",{"aria-label":"Status de "+t.titulo,onchange:e=>setTask(t,{status:e.target.value})});fillSelect(s,STATUS,t.status);
+    return h("tr",null,h("td",{style:"font-weight:600"},t.titulo),
+      h("td",null,h("span",{class:"chip"},h("i",{class:"dot",style:"background:"+AREA_COLOR[t.area]}),t.area)),
+      h("td",null,t.prioridade),h("td",null,h("span",{class:"chip "+QCLASS[t.quadrante]},QSHORT[t.quadrante])),
+      h("td",null,t.tecnica),h("td",{class:"mono"},fmtDue(t.prazo)),h("td",null,s));}));
+}
+
+/* ---------- salvar ---------- */
+async function save(coll,item,patch){
+  Object.assign(item,patch);render();
+  if(state.mode==="local"){persistLocal();return;}
+  try{await state.db.doc(coll+"/"+item.id).update(patch);}catch(e){toast(e&&e.code==="not_granted"?"Você não tem permissão para editar este painel.":"Não foi possível salvar. Tente de novo.");}
+}
+function setTask(t,patch){save("tasks",t,patch);}
+async function addTask(t){
+  if(state.mode==="local"){t.id="n"+Date.now();state.tasks.push(t);persistLocal();render();return;}
+  await state.db.collection("tasks").add(t);
+}
+function watch(coll,key){state.db.collection(coll).onSnapshot(s=>{state[key]=s.docs.map(d=>({id:d.id,...d.data()}));render();},()=>toast("Falha ao carregar "+coll+"."));}
+
+/* ---------- motores de IA ---------- */
+function engine(){return state.sample?"claude":AI_ENDPOINT?"externa":"regras";}
+async function askExternal(kind,prompt){
+  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({kind,prompt})});
+  if(!r.ok) throw new Error("http "+r.status);
+  const j=await r.json(); if(j.error) throw new Error(j.error); return j.text||"";
+}
+function parseJSON(txt){const m=String(txt).match(/\{[\s\S]*\}/);if(!m)throw new Error("sem JSON");return JSON.parse(m[0]);}
+
+/* classificação por regras (sem IA) */
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+function ruleDue(t){
+  let m=t.match(/\b(\d{1,2})\/(\d{1,2})\b/); if(m){const y=now.getFullYear();let d=new Date(y,+m[2]-1,+m[1]);if(d<new Date(now.getFullYear(),now.getMonth(),now.getDate()))d=new Date(y+1,+m[2]-1,+m[1]);return iso(d);}
+  if(/depois de amanha/.test(t))return addDays(2);
+  if(/\bamanha\b/.test(t))return addDays(1);
+  if(/\bhoje\b|agora|urgente/.test(t))return addDays(0);
+  if(/semana que vem|proxima semana/.test(t))return addDays(7);
+  const names=["segunda","terca","quarta","quinta","sexta","sabado","domingo"];
+  for(let i=0;i<7;i++){if(new RegExp("\\b"+names[i]).test(t)){let diff=(i-todayIdx+7)%7;if(diff===0)diff=7;return addDays(diff);}}
+  return null;
+}
+function ruleClassify(text){
+  const t=norm(text);
+  const has=list=>list.some(w=>t.includes(w));
+  let area="Pessoal";
+  if(has(["prova","aula","faculdade","professor","estudar","capitulo","trabalho de","disciplina","ler ","leitura","tcc","seminario"]))area="Faculdade";
+  else if(has(["gestor","chefe","reuniao","relatorio","cliente","planilha","e-mail","email","rh","empresa","expediente","pedido"]))area="Trabalho";
+  else if(has(["medico","consulta","academia","caminhada","remedio","farmacia","dentista","exame","treino"]))area="Saúde";
+  else if(has(["casa","compras","mercado","limpar","limpeza","conta de","aluguel","lavar","cozinhar"]))area="Casa";
+  const prazo=ruleDue(t);
+  const days=prazo?Math.round((new Date(prazo)-new Date(TODAY))/864e5):null;
+  const urgent=days!==null&&days<=2;
+  const important=["Faculdade","Trabalho","Saúde"].includes(area)||has(["entrega","prazo","pagar","vence","prova","gestor"]);
+  const quadrante=important&&urgent?QUADS[0]:important?QUADS[1]:urgent?QUADS[2]:QUADS[3];
+  const prioridade=quadrante===QUADS[0]?"Alta":quadrante===QUADS[3]?"Baixa":"Média";
+  let tecnica="Foco livre";
+  if(has(["estudar","ler ","leitura","capitulo","escrever","redigir","relatorio","revisar","resumo","trabalho de","prova"]))tecnica="Pomodoro";
+  else if(has(["responder","ligar","pagar","comprar","marcar","enviar mensagem","agendar"]))tecnica="Não se aplica";
+  const titulo=text.trim().replace(/^./,c=>c.toUpperCase());
+  const motivo=`${urgent?"Tem prazo em até 2 dias":"Sem prazo próximo"} e ${important?"afeta faculdade, trabalho, saúde ou um compromisso":"tem pouco impacto"}.`;
+  return {titulo,area,prioridade,quadrante,tecnica,prazo,motivo};
+}
+function rulePlan(){
+  const open=state.tasks.filter(t=>t.status!=="Concluído"&&t.status!=="Adiado");
+  const q=k=>open.filter(t=>t.quadrante===k).sort(byDue);
+  const lines=[];
+  q(QUADS[0]).slice(0,3).forEach(t=>lines.push(`Primeiro: ${t.titulo}${t.tecnica==="Pomodoro"?" (em Pomodoros)":""} – prazo ${fmtDue(t.prazo)}`));
+  const quick=q(QUADS[2]);if(quick.length)lines.push(`Bloco rápido de 30 min: ${quick.map(t=>t.titulo.toLowerCase()).join("; ")}`);
+  q(QUADS[1]).filter(t=>t.prazo&&t.prazo<=addDays(2)).slice(0,2).forEach(t=>lines.push(`Se sobrar tempo: ${t.titulo}`));
+  const later=state.tasks.filter(t=>t.quadrante===QUADS[3]&&t.status!=="Concluído");
+  lines.push("Deixar para depois: "+(later.length?later.map(t=>t.titulo).join(", "):"nada nesta semana"));
+  return lines.join("\n");
+}
+
+/* ---------- captura ---------- */
+fillSelect($("p-area"),AREAS);fillSelect($("p-prio"),PRIOS);fillSelect($("p-quad"),QUADS);fillSelect($("p-tec"),TECS);fillSelect($("p-status"),STATUS,"A fazer");
+$("examples").addEventListener("click",e=>{if(e.target.tagName==="BUTTON"){$("cap-text").value=e.target.textContent;$("cap-text").focus();}});
+function classifyPrompt(text){return `Você organiza tarefas de um estudante universitário que também trabalha. Hoje é ${DIAS[todayIdx]}, ${TODAY}.
+Classifique a demanda abaixo e responda SOMENTE com JSON válido, sem texto fora dele, neste formato:
+{"titulo": "nome curto e claro da tarefa, começando com verbo no infinitivo", "area": um de ${JSON.stringify(AREAS)}, "prioridade": um de ${JSON.stringify(PRIOS)}, "quadrante": um de ${JSON.stringify(QUADS)}, "tecnica": um de ${JSON.stringify(TECS)}, "prazo": "AAAA-MM-DD" ou null, "motivo": "uma frase curta explicando o quadrante"}
+Regras: urgente = prazo em até 2 dias ou alguém esperando agora; importante = afeta nota, trabalho, saúde ou compromisso sério. Use Pomodoro para estudo, escrita ou tarefas longas que pedem concentração; Não se aplica para tarefas de poucos minutos. Converta datas relativas (amanhã, sexta, semana que vem) em data real a partir de hoje. Não invente prazo se não houver pista.
+Demanda: """${text}"""`;}
+$("capture").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const text=$("cap-text").value.trim(); if(!text){toast("Escreva a tarefa primeiro.");return;}
+  const eng=engine();
+  $("cap-btn").disabled=true;$("cap-status").textContent=eng==="regras"?"Classificando…":"A IA está classificando…";
+  let r,label;
+  try{
+    if(eng==="claude"){r=await state.sample.json(classifyPrompt(text),{modelTier:"quick"});label="Classificado com IA (Claude).";}
+    else if(eng==="externa"){r=parseJSON(await askExternal("classify",classifyPrompt(text)));label="Classificado com IA (Gemini).";}
+    else{r=ruleClassify(text);label="Classificado por regras simples (prazo e palavras-chave). Esta versão não usa IA.";}
+  }catch(err){r=ruleClassify(text);label="A IA não respondeu, então usei as regras simples.";}
+  $("p-title").value=r.titulo||text;
+  if(AREAS.includes(r.area))$("p-area").value=r.area;
+  if(PRIOS.includes(r.prioridade))$("p-prio").value=r.prioridade;
+  if(QUADS.includes(r.quadrante))$("p-quad").value=r.quadrante;
+  if(TECS.includes(r.tecnica))$("p-tec").value=r.tecnica;
+  $("p-due").value=/^\d{4}-\d{2}-\d{2}$/.test(r.prazo||"")?r.prazo:"";
+  $("p-why").replaceChildren(h("b",null,"Por que: "),r.motivo||"",h("br"),h("span",{class:"note"},label));
+  $("proposal").hidden=false;$("cap-status").textContent="Revise e salve.";$("cap-btn").disabled=false;
+});
+$("p-cancel").addEventListener("click",()=>{$("proposal").hidden=true;$("cap-status").textContent="";});
+$("p-save").addEventListener("click",async()=>{
+  const t={titulo:$("p-title").value.trim()||$("cap-text").value.trim(),area:$("p-area").value,prioridade:$("p-prio").value,quadrante:$("p-quad").value,tecnica:$("p-tec").value,prazo:$("p-due").value||null,status:$("p-status").value,obs:"Capturada pelo painel.",criadoEm:new Date().toISOString()};
+  try{await addTask(t);toast("Tarefa salva.");$("proposal").hidden=true;$("cap-text").value="";$("cap-status").textContent="";}
+  catch(e){toast("Não foi possível salvar a tarefa.");}
+});
+
+/* ---------- plano do dia ---------- */
+$("plan-btn").addEventListener("click",async()=>{
+  const eng=engine();
+  const open=state.tasks.filter(t=>t.status!=="Concluído").sort(byDue).slice(0,20).map(t=>`- ${t.titulo} | ${t.area} | prioridade ${t.prioridade} | ${t.quadrante} | ${t.tecnica} | prazo ${t.prazo||"sem prazo"} | ${t.status}`).join("\n");
+  const blocks=state.week.filter(x=>x.dia===DIAS[todayIdx]).sort((a,b)=>a.horario.localeCompare(b.horario)).map(x=>`- ${x.horario} ${x.atividade}`).join("\n")||"- nenhum bloco fixo";
+  const prompt=`Hoje é ${DIAS[todayIdx]}, ${TODAY}. Sou estudante e trabalho. Monte um plano curto para o resto do meu dia em português do Brasil.
+Blocos já marcados hoje:
+${blocks}
+Tarefas em aberto:
+${open}
+Responda em texto simples, sem markdown, com no máximo 8 linhas no formato "HH:MM – atividade (motivo curto)". Priorize o quadrante Importante e urgente, encaixe Pomodoros nas tarefas marcadas com Pomodoro, agrupe tarefas rápidas em um único horário e termine com uma linha "Deixar para depois:" citando o que pode ser adiado.`;
+  $("plan-btn").disabled=true;$("plan-out").textContent="";
+  try{
+    if(eng==="claude"){$("plan-status").textContent="Pensando…";const r=await state.sample(prompt,{modelTier:"quick",onText:u=>{$("plan-out").textContent=u.text;}});$("plan-out").textContent=r.text;$("plan-status").textContent="Sugestão da IA (Claude).";}
+    else if(eng==="externa"){$("plan-status").textContent="Pensando…";$("plan-out").textContent=await askExternal("plan",prompt);$("plan-status").textContent="Sugestão da IA (Gemini).";}
+    else{$("plan-out").textContent=rulePlan();$("plan-status").textContent="Ordem sugerida por regras (Matriz de Eisenhower). Esta versão não usa IA.";}
+  }catch(err){$("plan-out").textContent=rulePlan();$("plan-status").textContent="A IA não respondeu, então usei as regras.";}
+  finally{$("plan-btn").disabled=false;}
+});
+
+/* ---------- pomodoro ---------- */
+const DUR={foco:25*60,pausa:5*60,longa:15*60};
+const LABEL={foco:"Foco",pausa:"Pausa curta",longa:"Pausa longa"};
+const P={mode:"foco",left:DUR.foco,running:false,end:0,cycles:0,timer:null};
+function renderFocusOptions(){const sel=$("focus-task");const cur=sel.value;
+  const opts=state.tasks.filter(t=>t.status!=="Concluído").sort((a,b)=>(a.tecnica==="Pomodoro"?0:1)-(b.tecnica==="Pomodoro"?0:1)||byDue(a,b));
+  sel.replaceChildren(h("option",{value:""},"Escolha uma tarefa"),...opts.map(t=>h("option",{value:t.id},(t.tecnica==="Pomodoro"?"● ":"")+t.titulo)));
+  if(cur)sel.value=cur;}
+function paint(){const m=Math.floor(P.left/60),s=P.left%60;$("clock").textContent=pad(m)+":"+pad(s);$("mode").textContent=LABEL[P.mode];
+  const frac=P.left/DUR[P.mode];$("arc").setAttribute("stroke-dashoffset",String(326.73*(1-frac)));
+  $("arc").setAttribute("stroke",P.mode==="foco"?"var(--q1)":"var(--ok)");
+  document.querySelectorAll("#cycles i").forEach((el,i)=>el.classList.toggle("on",i<P.cycles));
+  $("f-start").textContent=P.running?"Pausar":"Começar";
+  document.title=P.running?`${pad(m)}:${pad(s)} · ${LABEL[P.mode]}`:"Rotina em Foco";}
+function nextMode(){if(P.mode==="foco"){P.cycles++;P.mode=P.cycles>=4?"longa":"pausa";}else{if(P.mode==="longa")P.cycles=0;P.mode="foco";}
+  P.left=DUR[P.mode];toast(P.mode==="foco"?"Hora de focar.":P.mode==="longa"?"Quatro ciclos! Pausa longa.":"Pausa de 5 minutos.");}
+function tick(){P.left=Math.max(0,Math.round((P.end-Date.now())/1000));if(P.left===0){nextMode();P.end=Date.now()+P.left*1000;}paint();}
+$("f-start").addEventListener("click",()=>{if(P.running){clearInterval(P.timer);P.running=false;}else{P.end=Date.now()+P.left*1000;P.timer=setInterval(tick,500);P.running=true;}paint();});
+$("f-skip").addEventListener("click",()=>{nextMode();P.end=Date.now()+P.left*1000;paint();});
+$("f-reset").addEventListener("click",()=>{clearInterval(P.timer);Object.assign(P,{mode:"foco",left:DUR.foco,running:false,cycles:0});paint();});
+paint();
+
+/* ---------- inicialização ---------- */
+function setModeLabel(){
+  const eng=engine();
+  $("mode-badge").textContent=state.mode==="local"?"Versão aberta · salvo neste navegador":"Conectado ao claude.ai";
+  $("ai-badge").textContent=eng==="claude"?"IA: Claude":eng==="externa"?"IA: Gemini":"Sem IA (regras)";
+  $("reset").hidden=state.mode!=="local";
+  $("ai-note").textContent=eng==="claude"?"A IA roda pelo claude.ai. Na primeira vez, ele pede sua permissão. Ela só sugere, não altera nada sozinha."
+    :eng==="externa"?"A IA (Gemini, do Google) é chamada por um script no Google Apps Script. Ela só sugere, não altera nada sozinha."
+    :"Nesta versão a sugestão é feita por regras fixas, sem IA. A versão com IA aparece no vídeo de apresentação.";
+}
+$("reset").addEventListener("click",()=>{if($("reset").dataset.armed){try{localStorage.removeItem(LS_KEY);}catch(e){}loadLocal();render();toast("Exemplo restaurado.");delete $("reset").dataset.armed;$("reset").textContent="Restaurar dados de exemplo";}
+  else{$("reset").dataset.armed="1";$("reset").textContent="Clique de novo para confirmar";setTimeout(()=>{delete $("reset").dataset.armed;$("reset").textContent="Restaurar dados de exemplo";},4000);}});
+
+loadLocal();render();setModeLabel();
+const cl=window.claude;
+if(cl&&typeof cl.use==="function"){
+  cl.use("db").then(db=>{if(db){state.db=db;state.mode="claude";watch("tasks","tasks");watch("week","week");watch("habits","habits");setModeLabel();}});
+  cl.use("sample").then(s=>{if(s){state.sample=s;setModeLabel();}});
+}
+})();
+
+</script>
+</body>
+</html>
