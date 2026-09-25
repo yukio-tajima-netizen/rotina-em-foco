@@ -1,17 +1,18 @@
 # Rotina em Foco
 
-Painel complementar do **Meu Sistema Operacional Pessoal**, trabalho da disciplina **Produtividade e Gestão do Tempo** (UniFECAF).
+Meu sistema de produtividade pessoal, feito para o trabalho “Meu Sistema Operacional Pessoal” da disciplina **Produtividade e Gestão do Tempo** (UniFECAF). Este repositório guarda o painel web; a versão principal está no Notion.
 
-Site: https://yukio-tajima-netizen.github.io/rotina-em-foco/
+- Painel web: https://yukio-tajima-netizen.github.io/rotina-em-foco/
+- Notion: https://careful-flamingo-2c6.notion.site/Rotina-em-Foco-3e42d8a8a9b980df8418fd5f674518e8
 
 ## Descrição do sistema
 
-O Meu Sistema Operacional Pessoal organiza tempo, tarefas, prioridades, compromissos e hábitos. Ele parte de um problema real da minha rotina: trabalho e faculdade se misturam, sem horários fixos separando os dois, as interrupções são constantes e as tarefas administrativas ocupam o tempo de outras prioridades.
+O Rotina em Foco organiza tempo, tarefas, prioridades, compromissos e hábitos. Ele parte de um problema real da minha rotina: trabalho e faculdade se misturam, sem horários fixos separando os dois, as interrupções são constantes e as tarefas administrativas ocupam o tempo de outras prioridades.
 
 O sistema tem duas partes:
 
 - **Notion (sistema principal):** bases de Tarefas, Planejamento Semanal, Compromissos, Hábitos e Caixa de Entrada, dashboard com views filtradas, páginas sobre Matriz de Eisenhower, Pomodoro, uso da IA e Revisão Semanal.
-- **Rotina em Foco (este repositório):** painel visual que qualquer pessoa pode abrir no navegador, sem login.
+- **Painel web (este repositório):** painel visual que qualquer pessoa pode abrir no navegador, sem login.
 
 ## Ferramentas utilizadas
 
