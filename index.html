@@ -410,36 +410,33 @@ function fillSelect(sel,opts,val){sel.replaceChildren(...opts.map(o=>h("option",
 function seed(){
   const T=(id,titulo,area,prioridade,status,off,tecnica,quadrante,obs)=>({id,titulo,area,prioridade,status,prazo:off==null?null:addDays(off),tecnica,quadrante,obs});
   const tasks=[
-    T("t01","Finalizar documento teórico do trabalho de Produtividade","Faculdade","Alta","Em andamento",0,"Pomodoro","Importante e urgente","4 Pomodoros hoje à noite."),
-    T("t02","Preencher formulário administrativo do RH","Trabalho","Média","Em andamento",0,"Foco livre","Não importante e urgente","Resolver de uma vez."),
-    T("t03","Estudar conteúdo da próxima aula","Faculdade","Média","A fazer",1,"Pomodoro","Importante e não urgente","Ler os slides antes da aula."),
-    T("t04","Responder e-mails não urgentes","Trabalho","Baixa","A fazer",1,"Não se aplica","Não importante e urgente","Horário fixo no fim da tarde."),
-    T("t05","Enviar relatório semanal para o gestor","Trabalho","Alta","A fazer",2,"Foco livre","Importante e urgente","Até as 17h."),
+    T("t01","Finalizar o trabalho da facul UniFECAF","Faculdade","Alta","A fazer",4,"Pomodoro","Importante e urgente","Parte teórica, sistema com README e vídeo pitch."),
+    T("t03","Estudar conteúdo da próxima aula","Faculdade","Média","Concluído",-2,"Pomodoro","Importante e não urgente","Ler os slides antes da aula de sexta."),
+    T("t04","Responder e-mails não urgentes","Trabalho","Baixa","A fazer",1,"Não se aplica","Não importante e urgente","Horário fixo no fim do expediente."),
     T("t06","Marcar consulta de rotina","Saúde","Média","A fazer",2,"Não se aplica","Importante e não urgente","Ligar no almoço."),
     T("t07","Fazer compras da semana","Casa","Média","A fazer",3,"Não se aplica","Importante e não urgente","Lista no celular."),
     T("t08","Caminhada de 30 minutos","Saúde","Baixa","A fazer",4,"Não se aplica","Importante e não urgente","De manhã."),
     T("t09","Assistir série nova no streaming","Pessoal","Baixa","Adiado",4,"Não se aplica","Não importante e não urgente","Depois da entrega."),
-    T("t10","Gravar vídeo pitch de até 4 minutos","Faculdade","Alta","A fazer",5,"Pomodoro","Importante e urgente","Roteiro antes de gravar."),
-    T("t11","Revisar README e inserir prints do sistema","Faculdade","Alta","A fazer",6,"Pomodoro","Importante e urgente","Um print por requisito."),
+    T("t10","Gravar vídeo pitch","Faculdade","Alta","Em andamento",0,"Pomodoro","Importante e urgente","Roteiro antes de gravar."),
+    T("t11","Revisar README todo trabalho","Faculdade","Alta","A fazer",3,"Pomodoro","Importante e urgente","Um print por requisito."),
     T("t12","Organizar arquivos e pastas do mês","Trabalho","Média","Adiado",6,"Foco livre","Importante e não urgente","Semana cheia."),
-    T("t13","Entregar trabalho de Produtividade e Gestão do Tempo","Faculdade","Alta","A fazer",7,"Não se aplica","Importante e urgente","Documento, sistema e vídeo."),
     T("t14","Fazer o planejamento da semana","Pessoal","Alta","Concluído",-2,"Foco livre","Importante e não urgente","Feito com ajuda da IA."),
     T("t15","Revisar slides da aula anterior","Faculdade","Média","Concluído",-1,"Pomodoro","Importante e não urgente","2 Pomodoros."),
     T("t16","Pagar conta de luz","Casa","Alta","Concluído",-1,"Não se aplica","Importante e urgente","Pago pelo app do banco.")
   ];
-  const W=[["Planejar a semana",0,"07:30 – 08:00","Pessoal"],["Expediente de trabalho",0,"09:00 – 18:00","Trabalho"],["Aula online",0,"19:30 – 21:30","Faculdade"],["Revisar tarefas do dia",0,"21:40 – 21:50","Pessoal"],
-    ["Expediente de trabalho",1,"09:00 – 18:00","Trabalho"],["Academia",1,"18:30 – 19:30","Saúde"],["Revisar slides da aula anterior",1,"20:00 – 21:00","Faculdade"],
-    ["Bloco de foco: relatórios",2,"09:00 – 12:00","Trabalho"],["Formulário do RH",2,"13:00 – 13:30","Trabalho"],["E-mails em lote",2,"17:30 – 18:00","Trabalho"],["Finalizar documento teórico",2,"20:00 – 21:50","Faculdade"],
-    ["Expediente de trabalho",3,"09:00 – 18:00","Trabalho"],["Estudar próxima aula",3,"18:30 – 19:20","Faculdade"],["Aula online",3,"19:30 – 21:30","Faculdade"],["Planejar o dia seguinte",3,"21:40 – 21:50","Pessoal"],
-    ["Expediente de trabalho",4,"09:00 – 18:00","Trabalho"],["Enviar relatório ao gestor",4,"16:00 – 16:30","Trabalho"],["Roteiro do vídeo pitch",4,"19:00 – 20:00","Faculdade"],
+  const W=[["Serviço",0,"06:00 – 15:00","Trabalho"],["Rocket seat estudar",0,"19:30 – 21:30","Faculdade"],["Ir para academia",0,"19:30 – 23:00","Pessoal"],
+    ["Serviço",1,"06:00 – 15:00","Trabalho"],["Academia",1,"19:30 – 22:30","Saúde"],["Trabalho da Faculdade UniFECAF",1,"20:00 – 21:00","Faculdade"],
+    ["Serviço",2,"06:00 – 15:00","Trabalho"],["Aula da faculdade",2,"07:00 – 09:00","Faculdade"],["Revisar salário dos funcionários",2,"09:00 – 12:00","Trabalho"],["Finalizar documento teórico",2,"20:00 – 21:50","Faculdade"],
+    ["Serviço",3,"06:00 – 15:00","Trabalho"],["Estudar conteúdo da próxima aula",3,"18:30 – 19:20","Faculdade"],["Planejar o dia seguinte",3,"21:40 – 21:50","Pessoal"],
+    ["Serviço",4,"06:00 – 15:00","Trabalho"],["Aula da faculdade",4,"07:00 – 09:00","Faculdade"],["Escrever roteiro do vídeo pitch",4,"19:00 – 20:00","Faculdade"],
     ["Compras e tarefas de casa",5,"09:00 – 11:00","Casa"],["Gravar vídeo pitch",5,"14:00 – 16:00","Faculdade"],["Tempo livre com família e amigos",5,"18:00 – 22:00","Pessoal"],
     ["Caminhada de 30 minutos",6,"08:00 – 08:30","Saúde"],["Revisão semanal",6,"19:00 – 19:30","Pessoal"],["Planejar a próxima semana",6,"19:30 – 20:00","Pessoal"]];
-  const week=W.map((w,i)=>({id:"w"+pad(i+1),atividade:w[0],dia:DIAS[w[1]],horario:w[2],area:w[3],status:w[1]<todayIdx?(w[0]==="Academia"?"Adiado":"Concluído"):"A fazer"}));
+  const week=W.map((w,i)=>({id:"w"+pad(i+1),atividade:w[0],dia:DIAS[w[1]],horario:w[2],area:w[3],status:w[1]<todayIdx?(["Academia","Ir para academia","Trabalho da Faculdade UniFECAF","Finalizar documento teórico","Planejar o dia seguinte","Escrever roteiro do vídeo pitch"].includes(w[0])?"Adiado":"Concluído"):"A fazer"}));
   const habits=[["Revisar tarefas do dia","Diário",true,"atualizar o status antes de dormir"],["Planejar o dia seguinte","Diário",false,"definir as 3 tarefas principais"],["Fazer pausas entre blocos de foco","A cada bloco de foco",true,"manter a concentração"],["Evitar celular durante Pomodoro","A cada bloco de foco",false,"diminuir interrupções"],["Fazer revisão semanal","Semanal",false,"replanejar a próxima semana"],["Registrar pedidos na Caixa de Entrada","Diário",true,"não esquecer demandas"]]
     .map((x,i)=>({id:"h"+(i+1),habito:x[0],frequencia:x[1],concluido:x[2],objetivo:x[3]}));
   return {tasks,week,habits};
 }
-const LS_KEY="rotina-em-foco-v1";
+const LS_KEY="rotina-em-foco-v2";
 function loadLocal(){let d=null;try{d=JSON.parse(localStorage.getItem(LS_KEY)||"null");}catch(e){}
   if(!d||!Array.isArray(d.tasks)){d=seed();}
   Object.assign(state,{tasks:d.tasks,week:d.week,habits:d.habits});}
